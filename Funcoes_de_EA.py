@@ -40,27 +40,6 @@ import matplotlib.pyplot as plt
 from gpad_data_generation import *
 
 
-# In[ ]:
-
-
-a = np.array([0,0,0,0,8,9,7])
-print(a)
-
-print(np.log(a+1e-20))
-
-print(np.diff(a))
-
-x = ['5', '4', '3','2', '1']
-
-for i in x:
-    print('teste'+i)
-
-dicti = {'teste1':3, 'teste2': '4', 'teste3': 5.0}
-print(dicti['teste1'])
-
-
-# In[ ]:
-
 
 def delta(x):
     local = signal.find_peaks(x)
@@ -212,15 +191,6 @@ def FeatureSpectralCentroid(X, niveldwt, h=128):
     return vsc
 
 
-# In[ ]:
-
-
-x = main_d['EA_D5']
-vsc = v_sc(x, 5)
-print(vsc)
-fsc = FeatureSpectralCentroid(x, 5)
-print(fsc)
-
 
 # ### Atributo 5: v_ss ou Espalhamento Espectral
 # ```sh
@@ -324,15 +294,6 @@ def FeatureSpectralSpread(X, niveldwt, h=128):
     return np.squeeze(vss) if isSpectrum else vss
 
 
-# In[ ]:
-
-
-x = main_d['EA_D5']
-vss = v_ss(x, 5)
-print(vss)
-fss = FeatureSpectralSpread(x, 5)
-print(fss)
-
 
 # ### Atributo 6: v_SSk ou Skewness Espectral
 # ![Cálculo do Skewness Espectral](img/v_ssk.png)
@@ -407,17 +368,6 @@ def FeatureSpectralSkewness(X, niveldwt, f_s=44100, UseBookDefinition=False):
 
     return vssk
 
-
-# In[ ]:
-
-
-x = main_d['EA_D5']
-vss = v_ssk(x)
-print(vss)
-l = FeatureSpectralSkewness(x, 5, 44100, True)
-print(l)
-l = FeatureSpectralSkewness(x, 5, 44100, False)
-print(l)
 
 
 # ### Atributo 7: v_ThCR ou v_zcr ou Taxa de Cruzamento por Zero
@@ -506,12 +456,6 @@ def v_zcr(x, Cf, h=0, threshold = 0):
     return v_zcr
 
 
-# In[ ]:
-
-
-print(v_zcr(main_d['pedfD4'], np.size(main_d['pedfD4'])))
-
-
 # ### Atributo 8: v_scf ou Fator do Espectro de Magnitude
 #  
 #  ![Cálculo do Spectral Crest Factor](img/v_scf.png)
@@ -590,13 +534,6 @@ def v_sr(x, niveldwt, kappa = .85, f_s = 44100, h=128):
     v_sr = v_sr/(x.size-1) * f_s_eq/2
     
     return v_sr
-
-
-# In[ ]:
-
-
-c = v_sr(main_d['EA_A5'], 5)
-print(main_d['EA_A5'].shape[0]-1)
 
 
 # ### Atributo 10: v_sd ou Spectral Decrease (**)
@@ -696,13 +633,6 @@ def FeatureSpectralDecrease(X, f_s):
 # In[ ]:
 
 
-x = main_d['EA_D5']
-n = main_d['NFFT_D5']
-fsd = FeatureSpectralDecrease(x, 5, n)
-print(fsd)
-print(v_sd(x,5,n))
-
-
 # ### Atributo 11: v_sf ou Spectral Flatness (**)
 # 
 # ![Cálculo do Spectral Flatness](img/v_sf.png)
@@ -759,19 +689,6 @@ def FeatureSpectralFlatness(X, f_s):
     return np.squeeze(vtf, axis=0)
 
 
-# In[ ]:
-
-
-x = main_d['EA_A5']
-
-f = v_sf(x) 
-print(f)
-
-fe = FeatureSpectralFlatness(x, 44100)
-print(fe)
-
-org = mat_cont['resultado'][10]
-print(org)
 
 
 # ### Atributo 12: v_pr ou Predictivity Ratio (**)
@@ -867,13 +784,7 @@ def v_pr(x):
     return v_pr
 
 
-# In[ ]:
 
-
-x = main_d['pedfA5']
-print(x)
-vpr = v_pr(x)
-print(vpr)
 
 
 # ### Atributo 13: v_ERf1 ou Espectro Rítmico (**)
@@ -1031,174 +942,4 @@ def ECA(PeDFs, f_s = 44100, h = 128): #EXTRATOR COMPLETO DE ATRIBUTOS de um úni
     
     
     
-    
-
-
-# In[ ]:
-
-
-odf, pedf, ppedf, coefs = music_processor('100605.mp3')
-
-
-# In[ ]:
-
-
-pedfD4 = signal.detrend(pedf[2], type='constant')
-deltaD4 = delta(pedfD4)
-print(deltaD4.shape)
-
-
-# In[ ]:
-
-
-musica = music_loading('100605.mp3')
-
-
-# In[ ]:
-
-
-main_d, dicionario = ECA(pedf)
-
-
-# In[ ]:
-
-
-mat_cont = sio.loadmat('Resultado.mat')
-
-
-# In[ ]:
-
-
-mat = mat_cont['resultado']
-a5 = []
-d5 = []
-d4 = []
-d3 = []
-d2 = []
-d1 = []
-
-_a5 = mat[0:13]
-_d5 = mat[13:26]
-_d4 = mat[26:39]
-_d3 = mat[39:52]
-_d2 = mat[52:65]
-_d1 = mat[65:78]
-
-for i in dicionario.keys():
-    if i[len(i)-2] == 'A':
-        a5.append(dicionario[i])
-    elif i[len(i)-1] == '5':
-        d5.append(dicionario[i])
-    elif i[len(i)-1] == '4':
-        d4.append(dicionario[i])
-    elif i[len(i)-1] == '3':
-        d3.append(dicionario[i])
-    elif i[len(i)-1] == '2':
-        d2.append(dicionario[i])
-    elif i[len(i)-1] == '1':
-        d1.append(dicionario[i])
-        
-
-erro_a5 = []
-erro_d5 = []
-erro_d4 = []
-erro_d3 = []
-erro_d2 = []
-erro_d1 = []
-
-nums = range(len(d1))
-
-for i in nums:
-    print('A5 - Atributo '+str(i))
-    print()
-    print(a5[i], _a5[i])
-    erro = int(100*(a5[i]-_a5[i])/_a5[i])
-    #if a5[i] == 0:
-        #erro=0
-    erro_a5.append(abs(erro))
-    print(erro)
-    print()
-    print()
-    
-for i in nums:
-    print('D5 - Atributo '+str(i))
-    print()
-    print(d5[i], _d5[i])
-    erro = int(100*(d5[i]-_d5[i])/_d5[i])
-    #if d5[i] == 0:
-    #    erro=0
-    erro_d5.append(abs(erro))
-    print(erro)
-    print()
-    print()
-
-for i in nums:
-    print('D4 - Atributo '+str(i))
-    print()
-    print(d4[i], _d4[i])
-    erro = int(100*(d4[i]-_d4[i])/_d4[i])
-    #if d4[i] == 0:
-    #    erro=0
-    erro_d4.append(abs(erro))
-    print(erro)
-    print()
-    print()
-
-for i in nums:
-    print('D3 - Atributo '+str(i))
-    print()
-    print(d3[i], _d3[i])
-    erro = int(100*(d3[i]-_d3[i])/_d3[i])
-    #if d3[i] == 0:
-    #    erro=0
-    erro_d3.append(abs(erro))
-    print(erro)
-    print()
-    print()
-
-for i in nums:
-    print('D2 - Atributo '+str(i))
-    print()
-    print(d2[i], _d2[i])
-    erro = int(100*(d2[i]-_d2[i])/_d2[i])
-    #if d2[i] == 0:
-    #    erro=0
-    erro_d2.append(abs(erro))
-    print(erro)
-    print()
-    print()
-
-for i in nums:
-    print('D1 - Atributo '+str(i))
-    print()
-    print(d1[i], _d1[i])
-    erro = int(100*(d1[i]-_d1[i])/_d1[i])
-    #if d1[i] == 0:
-   #     erro=0
-    erro_d1.append(abs(erro))
-    print(erro)
-    print()
-    print()
-    
-
-erro_a5 = np.array(erro_a5)
-erro_d5 = np.array(erro_d5)
-erro_d4 = np.array(erro_d4)
-erro_d3 = np.array(erro_d3)
-erro_d2 = np.array(erro_d2)
-erro_d1 = np.array(erro_d1)
-
-erros = np.array([erro_a5, erro_d5, erro_d4, erro_d3, erro_d2, erro_d1])
-    
-
-
-# In[ ]:
-
-
-e = 0
-for j in range(len(nums)):
-    for i in erros:
-        e = e + i[j]
-    print(f'Atributo {j} - {e/6}')
-    e=0
-
+  
