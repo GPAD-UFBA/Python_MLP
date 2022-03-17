@@ -26,7 +26,7 @@
 
 # ### Importações
 
-# In[ ]:
+# In[1]:
 
 
 import numpy as np
@@ -39,6 +39,8 @@ import matplotlib.pyplot as plt
 
 from gpad_data_generation import *
 
+
+# In[2]:
 
 
 def delta(x):
@@ -69,7 +71,7 @@ def EspectroAmplitude(x):
 # v_eta_PeDFA5(k)=mean(Delta1);
 # ```
 
-# In[ ]:
+# In[3]:
 
 
 def v_eta(x):
@@ -85,7 +87,7 @@ def v_eta(x):
 # v_sigma_PeDFA5(k)=std(Delta1,1); %O número 1 em std(x,1) é um flag indicando sqrt((x-eta_x)^2)/N, onde N é número de amostras
 # ```
 
-# In[ ]:
+# In[4]:
 
 
 def v_sigma(x):
@@ -98,7 +100,7 @@ def v_sigma(x):
 # v_mu_PeDFA5(k)=mode(Delta1); %Quando há valores múltiplos ocorrendo com frequência igual, MODE retorna o menor destes valores
 # ```
 
-# In[ ]:
+# In[5]:
 
 
 def v_mu(x):
@@ -145,7 +147,7 @@ def v_mu(x):
 # end
 # ```
 
-# In[ ]:
+# In[6]:
 
 
 def v_sc(x, niveldwt, h = 128, hertz = True):
@@ -166,7 +168,7 @@ def v_sc(x, niveldwt, h = 128, hertz = True):
     return v_sc
 
 
-# In[ ]:
+# In[7]:
 
 
 def FeatureSpectralCentroid(X, niveldwt, h=128):
@@ -189,7 +191,6 @@ def FeatureSpectralCentroid(X, niveldwt, h=128):
     vsc = np.squeeze(vsc) if isSpectrum else np.squeeze(vsc, axis=0)
 
     return vsc
-
 
 
 # ### Atributo 5: v_ss ou Espalhamento Espectral
@@ -236,7 +237,7 @@ def FeatureSpectralCentroid(X, niveldwt, h=128):
 # end
 # ```
 
-# In[ ]:
+# In[8]:
 
 
 def v_ss(x, niveldwt, hertz=True, f_s=44100, h=128):
@@ -263,7 +264,7 @@ def v_ss(x, niveldwt, hertz=True, f_s=44100, h=128):
     return v_ss
 
 
-# In[ ]:
+# In[9]:
 
 
 def FeatureSpectralSpread(X, niveldwt, h=128):
@@ -294,7 +295,6 @@ def FeatureSpectralSpread(X, niveldwt, h=128):
     return np.squeeze(vss) if isSpectrum else vss
 
 
-
 # ### Atributo 6: v_SSk ou Skewness Espectral
 # ![Cálculo do Skewness Espectral](img/v_ssk.png)
 # 
@@ -319,7 +319,7 @@ def FeatureSpectralSpread(X, niveldwt, h=128):
 # end
 # ```
 
-# In[ ]:
+# In[10]:
 
 
 def v_ssk(x):
@@ -330,7 +330,7 @@ def v_ssk(x):
     return v_ssk
 
 
-# In[ ]:
+# In[11]:
 
 
 def FeatureSpectralSkewness(X, niveldwt, f_s=44100, UseBookDefinition=False):
@@ -367,7 +367,6 @@ def FeatureSpectralSkewness(X, niveldwt, f_s=44100, UseBookDefinition=False):
             vssk[n] = np.dot((f - vsc[n])**3, X[:, n]) / (vss[n]**3 * norm[n] * X.shape[0])
 
     return vssk
-
 
 
 # ### Atributo 7: v_ThCR ou v_zcr ou Taxa de Cruzamento por Zero
@@ -433,7 +432,7 @@ def FeatureSpectralSkewness(X, niveldwt, f_s=44100, UseBookDefinition=False):
 # end
 # ```
 
-# In[ ]:
+# In[12]:
 
 
 def v_zcr(x, Cf, h=0, threshold = 0):
@@ -476,7 +475,7 @@ def v_zcr(x, Cf, h=0, threshold = 0):
 # end
 # ```
 
-# In[ ]:
+# In[13]:
 
 
 def v_scf(x):
@@ -520,7 +519,7 @@ def v_scf(x):
 # end
 # ```
 
-# In[ ]:
+# In[14]:
 
 
 def v_sr(x, niveldwt, kappa = .85, f_s = 44100, h=128):
@@ -577,7 +576,7 @@ def v_sr(x, niveldwt, kappa = .85, f_s = 44100, h=128):
 # end
 # ```
 
-# In[ ]:
+# In[1]:
 
 
 def v_sd(X, niveldwt, NFFT, f_s=44100, h=128):
@@ -605,12 +604,12 @@ def v_sd(X, niveldwt, NFFT, f_s=44100, h=128):
     v_sd = np.tile(x2[0], (np.size(x2), 1)) 
     vsd = np.dot(kinv, x2-v_sd) / norm
 
-    return np.squeeze(vsd[1])
+    return FeatureSpectralDecrease(X, f_s_eq)
     
          
 
 
-# In[ ]:
+# In[16]:
 
 
 #CÓDIGO ALEXANDER LERCH
@@ -625,12 +624,9 @@ def FeatureSpectralDecrease(X, f_s):
     norm[norm == 0] = 1
 
     # compute slope
-    vsc = np.dot(kinv, X - X[0]) / norm
+    vsd = np.dot(kinv, X - X[0]) / norm
 
-    return np.squeeze(vsc, axis=0)
-
-
-# In[ ]:
+    return np.squeeze(vsd, axis=0)
 
 
 # ### Atributo 11: v_sf ou Spectral Flatness (**)
@@ -657,7 +653,7 @@ def FeatureSpectralDecrease(X, f_s):
 # end
 # ```
 
-# In[ ]:
+# In[2]:
 
 
 def v_sf(x, f_s = 44100):
@@ -668,10 +664,10 @@ def v_sf(x, f_s = 44100):
     xlog = np.log(x+1e-20)
     v_sf = np.divide((np.exp(np.mean(xlog))),(norm))
     
-    return v_sf
+    return FeatureSpectralFlatness(x, f_s)
 
 
-# In[ ]:
+# In[18]:
 
 
 #CÓDIGO ALEXANDER LERCH
@@ -687,8 +683,6 @@ def FeatureSpectralFlatness(X, f_s):
     vtf[X.min(axis=0, keepdims=True) == 0] = 0
     
     return np.squeeze(vtf, axis=0)
-
-
 
 
 # ### Atributo 12: v_pr ou Predictivity Ratio (**)
@@ -738,7 +732,7 @@ def FeatureSpectralFlatness(X, f_s):
 # end
 # ```
 
-# In[ ]:
+# In[19]:
 
 
 def lpc(y, m):
@@ -765,7 +759,7 @@ def lpc(y, m):
         return A
 
 
-# In[ ]:
+# In[20]:
 
 
 def v_pr(x):
@@ -782,9 +776,6 @@ def v_pr(x):
     #filtro 1y(n)=0x(n)-b(2)x(n-1)+...b(end)x(Ord
     #v_pr = 1
     return v_pr
-
-
-
 
 
 # ### Atributo 13: v_ERf1 ou Espectro Rítmico (**)
@@ -821,7 +812,7 @@ def v_pr(x):
 # 
 # ```
 
-# In[ ]:
+# In[21]:
 
 
 def v_erf1(x, niveldwt, NFFT, f_s = 44100, h=128):
@@ -838,10 +829,25 @@ def v_erf1(x, niveldwt, NFFT, f_s = 44100, h=128):
     return v_erf1
 
 
-# In[ ]:
+# In[34]:
 
 
-def ECA(PeDFs, f_s = 44100, h = 128): #EXTRATOR COMPLETO DE ATRIBUTOS de um único set de PeDFs
+nain = ['a', 'c']
+
+if 'a' not in nain:
+    print('a')
+
+if 'b' not in nain:
+    print('b')
+    
+if 'c' not in nain:
+    print('c')
+
+
+# In[35]:
+
+
+def ECA(PeDFs, f_s = 44100, h = 128, wich_not = []): #EXTRATOR COMPLETO DE ATRIBUTOS de um único set de PeDFs
     
     numdwt = ['5','4','3','2','1']
     
@@ -871,70 +877,83 @@ def ECA(PeDFs, f_s = 44100, h = 128): #EXTRATOR COMPLETO DE ATRIBUTOS de um úni
     #------------CÁLCULO DE ATRIBUTOS------------#
         
     #Cálculo do Atributo 1: Média
-    atributos["v_eta_A5"] = v_eta(main_dict["deltaA5"])
-    for i in numdwt:
-        atributos["v_eta_D"+i] = v_eta(main_dict["deltaD"+i])
+    if "v_eta" not in wich_not:
+        atributos["v_eta_A5"] = v_eta(main_dict["deltaA5"])
+        for i in numdwt:
+            atributos["v_eta_D"+i] = v_eta(main_dict["deltaD"+i])
         
       
     #Cálculo do Atributo 2: Desvio Padrão
-    atributos["v_sigma_A5"] = v_sigma(main_dict["deltaA5"])
-    for i in numdwt:
-        atributos["v_sigma_D"+i] = v_sigma(main_dict["deltaD"+i])
+    if "v_sigma" not in wich_not:
+        atributos["v_sigma_A5"] = v_sigma(main_dict["deltaA5"])
+        for i in numdwt:
+            atributos["v_sigma_D"+i] = v_sigma(main_dict["deltaD"+i])
         
-    #Calculo do Atributo 3: Moda    
-    atributos["v_mu_A5"] = v_mu(main_dict["deltaA5"])
-    for i in numdwt:
-        atributos["v_mu_D"+i] = v_mu(main_dict["deltaD"+i])
+    #Calculo do Atributo 3: Moda
+    if "v_mu" not in wich_not:
+        atributos["v_mu_A5"] = v_mu(main_dict["deltaA5"])
+        for i in numdwt:
+            atributos["v_mu_D"+i] = v_mu(main_dict["deltaD"+i])
         
     #Cálculo do Atributo 4: Centróide Espectral
-    atributos["v_sc_A5"] = v_sc(main_dict["EA_A5"], 5)
-    for i in numdwt:
-        atributos["v_sc_D"+i] = v_sc(main_dict["EA_D"+i], int(i))   
+    if "v_sc" not in wich_not:
+        atributos["v_sc_A5"] = v_sc(main_dict["EA_A5"], 5)
+        for i in numdwt:
+            atributos["v_sc_D"+i] = v_sc(main_dict["EA_D"+i], int(i))   
     
     #Cálculo do Atributo 5: Espelhamento Espectral
-    atributos["v_ss_A5"] = v_ss(main_dict["EA_A5"], 5)
-    for i in numdwt:
-        atributos["v_ss_D"+i] = v_ss(main_dict["EA_D"+i], int(i))
+    if "v_ss" not in wich_not:
+        atributos["v_ss_A5"] = v_ss(main_dict["EA_A5"], 5)
+        for i in numdwt:
+            atributos["v_ss_D"+i] = v_ss(main_dict["EA_D"+i], int(i))
         
     #Cálculo do Atributo 6: Skewness Espectral
-    atributos["v_ssk_A5"] = v_ssk(main_dict["EA_A5"])
-    for i in numdwt:
-        atributos["v_ssk_D"+i] = v_ssk(main_dict["EA_D"+i])
+    if "v_ssk" not in wich_not:
+        atributos["v_ssk_A5"] = v_ssk(main_dict["EA_A5"])
+        for i in numdwt:
+            atributos["v_ssk_D"+i] = v_ssk(main_dict["EA_D"+i])
         
     #Cálculo do Atributo 7: Taxa de Cruzamento por Zero
-    atributos["v_zcr_A5"] = v_zcr(main_dict["pedfA5"], np.size(main_dict["pedfA5"]))
-    for i in numdwt:
-        atributos["v_zcr_D"+i] = v_zcr(main_dict["pedfD"+i], np.size(main_dict["pedfD"+i]))
+    if "v_zcr" not in wich_not:
+        atributos["v_zcr_A5"] = v_zcr(main_dict["pedfA5"], np.size(main_dict["pedfA5"]))
+        for i in numdwt:
+            atributos["v_zcr_D"+i] = v_zcr(main_dict["pedfD"+i], np.size(main_dict["pedfD"+i]))
         
     #Cálculo do Atributo 8: Spectral Crest Factor
-    atributos["v_scf_A5"] = v_scf(main_dict["EA_A5"])
-    for i in numdwt:
-        atributos["v_scf_D"+i] = v_scf(main_dict["EA_D"+i])
+    if "v_scf" not in wich_not:
+        atributos["v_scf_A5"] = v_scf(main_dict["EA_A5"])
+        for i in numdwt:
+            atributos["v_scf_D"+i] = v_scf(main_dict["EA_D"+i])
     
     #Cálculo do Atributo 9: Spectral Rollof
-    atributos["v_sr_A5"] = v_sr(main_dict["EA_A5"], 5)
-    for i in numdwt:
-        atributos["v_sr_D"+i] = v_sr(main_dict["EA_D"+i], int(i))
+    if "v_sr" not in wich_not:
+        atributos["v_sr_A5"] = v_sr(main_dict["EA_A5"], 5)
+        for i in numdwt:
+            atributos["v_sr_D"+i] = v_sr(main_dict["EA_D"+i], int(i))
         
     #Cálculo do Atributo 10: Spectral Decrease
-    atributos["v_sd_A5"] = v_sd(main_dict["EA_A5"], 5, main_dict["NFFT_A5"])
-    for i in numdwt:
-        atributos["v_sd_D"+i] = v_sd(main_dict["EA_D"+i], int(i), main_dict["NFFT_D"+i])
+    if "v_sd" not in wich_not:
+        atributos["v_sd_A5"] = v_sd(main_dict["EA_A5"], 5, main_dict["NFFT_A5"])
+        for i in numdwt:
+            atributos["v_sd_D"+i] = v_sd(main_dict["EA_D"+i], int(i), main_dict["NFFT_D"+i])
         
     #Cálculo do Atributo 11: Spectral Flatness
-    atributos["v_sf_A5"] = v_sf(main_dict["EA_A5"])
-    for i in numdwt:
-        atributos["v_sf_D"+i] = v_sf(main_dict["EA_D"+i])
+    if "v_sf" not in wich_not:
+        atributos["v_sf_A5"] = v_sf(main_dict["EA_A5"])
+        for i in numdwt:
+            atributos["v_sf_D"+i] = v_sf(main_dict["EA_D"+i])
         
     #Cálculo do Atributo 12: Predictivity Ratio
-    atributos["v_pr_A5"] = v_pr(main_dict["pedfA5"])
-    for i in numdwt:
-        atributos["v_pr_D"+i] = v_pr(main_dict["pedfD"+i])
+    if "v_pr" not in wich_not:
+        atributos["v_pr_A5"] = v_pr(main_dict["pedfA5"])
+        for i in numdwt:
+            atributos["v_pr_D"+i] = v_pr(main_dict["pedfD"+i])
     
     #Cálculo do Atributo 13: Espectro Rítmico
-    atributos["v_erf1_A5"] = v_erf1(main_dict["EA_A5"], 5, main_dict["NFFT_A5"])
-    for i in numdwt:
-        atributos["v_erf1_D"+i] = v_erf1(main_dict["EA_D"+i], int(i), main_dict["NFFT_D"+i])
+    if "v_erf1" not in wich_not:
+        atributos["v_erf1_A5"] = v_erf1(main_dict["EA_A5"], 5, main_dict["NFFT_A5"])
+        for i in numdwt:
+            atributos["v_erf1_D"+i] = v_erf1(main_dict["EA_D"+i], int(i), main_dict["NFFT_D"+i])
         
     #------------------------------------#
         
@@ -942,4 +961,6 @@ def ECA(PeDFs, f_s = 44100, h = 128): #EXTRATOR COMPLETO DE ATRIBUTOS de um úni
     
     
     
-  
+    
+
+
